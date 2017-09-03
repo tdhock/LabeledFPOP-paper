@@ -1,0 +1,13 @@
+LabeledFPOP paper
+
+** Motivation
+
+[[https://hal.inria.fr/hal-00759129][SegAnnot]] is a changepoint detection algorithm for data sequences with
+labels, but it does not find changes that are not labeled. [[http://link.springer.com/article/10.1007/s11222-016-9636-3][FPOP]] is a
+changepoint detection algorithm which can find any number of changes,
+but it ignores the labels. In this project we investigate a new
+algorithm which combines ideas from both algorithms.
+
+** 3 Sept 2017
+
+Typed problem and dynamic programming update rules.

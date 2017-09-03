@@ -1,0 +1,205 @@
+\documentclass{article}
+
+\usepackage{fullpage}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\DeclareMathOperator*{\Diag}{Diag}
+\DeclareMathOperator*{\TPR}{TPR}
+\DeclareMathOperator*{\Segments}{Segments}
+\DeclareMathOperator*{\Changes}{Changes}
+\DeclareMathOperator*{\FPR}{FPR}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\maximize}{maximize}
+\DeclareMathOperator*{\minimize}{minimize}
+\newcommand{\ZZ}{\mathbb Z}
+\newcommand{\NN}{\mathbb N}
+\newcommand{\RR}{\mathbb R}
+
+\begin{document}
+
+\title{FPOP with labels}
+\author{Toby Dylan Hocking}
+\maketitle
+
+We have a sequence of $d$ data points to segment,
+$\mathbf z\in\mathbb R^d$. We also have $l$ labeled regions
+$R=\{(\underline p_1, \overline p_1, c_1), \dots,
+(\underline p_l, \overline p_l, c_l)\}$:
+\begin{itemize}
+\item $\underline p_i$ is the start of a labeled region,
+\item $\overline p_i$ is the end of a labeled region,
+\item $c_i\in\{0,1\}$ is the number of changes in the region
+  $[\underline p_i, \overline p_i]$. 
+\end{itemize}
+For example
+$R=\{(\underline p_1=1,\overline p_1=2,c_1=0),(\underline
+p_2=2,\overline p_2=5,c_2=1)\}$ means that there is no change after
+the first data point, and there must be exactly one change somewhere
+between data points 2 and 5 (three possibilities). Assume the
+labeled regions are ordered:
+\begin{equation}
+  \label{eq:sorted}
+  1 \leq 
+\underline p_1 < \overline p_1 \leq 
+\underline p_2 < \overline p_2 \leq
+\cdots \leq 
+\underline p_l < \overline p_l \leq 
+d
+\end{equation}
+Thus the number of possible labels is $l\in\{0, 1, \dots, d-1\}$.
+
+\section{Optimization problem}
+
+We would like to find the best mean vector $\mathbf m\in\mathbb R^d$.
+Best is defined using the Optimal Partitioning objective function -- a
+loss $\ell$ term for each data point, and a per-change penalty of
+$\lambda\geq 0$ (TODO:CITATION). We also add the constraints that the
+labels must be obeyed.
+
+\begin{align}
+\minimize_{
+  \mathbf m\in\RR^{d}
+  } &\ \ 
+\lambda\sum_{t=1}^{d-1} I(m_t \neq m_{t+1})
++
+\sum_{t=1}^d \ell(z_t, m_t) 
+  \label{LabeledProb}
+\\
+    \text{subject to} 
+& \ \ \sum_{t=\underline p_i}^{\overline p_i-1} I(m_t \neq m_{t+1})=c_i
+\text{ for all } i\in\{1,\dots,l\}.
+\end{align}
+Note that $I$ is the indicator function (1 if true, 0 otherwise).
+
+SegAnnot is one algorithm that can be used in this context, but it is
+limited in that it can not detect any changes that are not labeled
+(TODO:citation). In fact SegAnnot computes a model with exactly
+$N_1(R)=\sum_{(\underline p_i, \overline p_i, c_i)\in R} I(c_i=1)$ changes.
+
+The labels cover
+$S(R)=\sum_{(\underline p_i, \overline p_i, c_i)\in R} \overline
+p_i-\underline p_i$ possible changes, in which there are exactly
+$N_1(R)$ changes. There are thus $d-S(R)$ positions which are not
+labeled, which may or may not have changes. Thus the number of
+possible changes is in $[N_1(R), d-S(R)+N_1(R)]$.
+
+\section{Algorithm}
+
+We propose a new algorithm, LabeledFPOP, which solves
+(\ref{LabeledProb}). We define $C_t(\mu)$ as the optimal cost up to
+data point $t$ if there is a mean of $\mu$ on the last data point
+$t$. The initialization is $C_1(\mu)= \ell(z_1, \mu)$. 
+
+\subsection{Usual FPOP}
+In the usual
+FPOP (without the label constraints), the dynamic programming update
+rule for $t>1$ is
+\begin{equation}
+  \label{eq:usual_FPOP}
+  C_t(\mu)=\ell(z_t, \mu) + \min
+  \begin{cases}
+\hat C_{t-1}+\lambda &\text{ if there is a change between $t-1$ and $t$,}\\
+C_{t-1}(\mu) & \text{ if there is no change.}
+  \end{cases}
+\end{equation}
+Note that $\hat C_{t-1}=\min_\mu C_{t-1}(\mu)$ is the optimal cost up
+to data point $t-1$.
+
+For LabeledFPOP the update rule (\ref{eq:usual_FPOP}) is used if there
+is no label between data points $t-1$ and $t$. Indeed, if $R=\{\}$
+then there are no labels at all, so the LabeledFPOP problem and
+solution are the same as the usual FPOP.
+
+\subsection{Negative label}
+If there is a $c_i=0$ label such that
+$\underline c_i < t \leq \overline c_i$, then the update rule is
+simpler: the only possibility is no change.
+\begin{equation}
+  \label{eq:negative_update}
+  C_t(\mu)=\ell(z_t,\mu)+
+C_{t-1}(\mu).
+\end{equation}
+
+\subsection{Positive label at the start}
+For a $c_i=1$ label the update rule is a bit more complicated. Take a
+simple example to start. For a
+$(\underline p_i=1,\overline p_i=3,c_i=1)$ label, the cost up to the
+end of the label is
+\begin{equation}
+  \label{eq:positive_cost}
+  \min_{\mu_1, \mu_2}
+  \begin{cases}
+    \ell(z_1,\mu_1) + \ell(z_2, \mu_2)+\ell(z_3, \mu_2) &\text{ for a
+      change after 1}\\
+    \ell(z_1,\mu_1) + \ell(z_2, \mu_1)+\ell(z_3, \mu_2) &\text{ for a
+      change after 2}\\
+  \end{cases}
+\end{equation}
+In general for a
+$(\underline p_i=1,\overline p_i,c_i=1)$ label, the cost up to the end
+of the label is
+\begin{equation}
+  \label{eq:positive_cost}
+  \min_{\mu_1, \mu_2}
+  \min_{t\in[1, \overline p_i-1]}
+  \underbrace{
+    \sum_{j=1}^t \ell(z_j, \mu_1)
+  }_{\mathcal L_{1,t}(\mu_1)}+
+  \underbrace{
+    \sum_{j=t+1}^{\overline p_i}\ell(z_j, \mu_2)
+  }_{\mathcal L_{t+1,\overline p_i}(\mu_2)}.
+\end{equation}
+We can use the recursive update rule for $t\in[2,\overline p_i-1]$:
+\begin{equation}
+  \mathcal L_{1,t}(\mu) = \mathcal L_{1,t-1}(\mu) +\ell(z_t , \mu).
+\end{equation}
+And then for the optimal cost we initialize $t=2$ to the cost of a
+change between 1 and 2:
+\begin{equation}
+  C_2(\mu)=\mathcal{\hat L}_{1,1}+\lambda+\ell(z_2,\mu).
+\end{equation}
+And then
+the update rule for
+$t\in[3, \overline p_i]$ is:
+\begin{equation}
+  \label{eq:positive_update}
+  C_t(\mu)=\ell(z_t, \mu) + \min
+  \begin{cases}
+\mathcal{\hat L}_{1, t-1}+\lambda &\text{ if there is a change between $t-1$ and $t$,}\\
+C_{t-1}(\mu) & \text{ if the labeled change was before that.}
+  \end{cases}
+\end{equation}
+\subsection{Positive label general case}
+
+In general for a $(\underline p_i,\overline p_i,c_i=1)$ label, we need
+to add the optimal cost function before the label, for
+$t\in[\underline p_i, \overline p_i-1]$:
+\begin{equation}
+D_{\underline p_i, t}(\mu) = 
+\begin{cases}
+  C_{\underline p_i}(\mu) & \text{ for }t=\underline p_i\\
+  \ell(z_t, \mu) + D_{\underline p_i,t-1}(\mu) & \text{ for }t\in[\underline p_i+1, \overline p_i-1].
+\end{cases}
+\end{equation}
+And then for the optimal cost we initialize $t=\underline p_i+1$ to
+the cost of a change between $\underline p_i$ and $\underline p_i+1$:
+\begin{equation}
+  C_{\underline p_i+1}(\mu)=\ell(z_{\underline p_i+1},\mu)+\hat D_{\underline p_i,\underline p_i}+\lambda.
+\end{equation}
+And then
+the update rule for
+$t\in[\underline p_i+2, \overline p_i]$ is:
+\begin{equation}
+  \label{eq:positive_update}
+  C_t(\mu)=\ell(z_t, \mu) + \min
+  \begin{cases}
+\hat D_{\underline p_i, t-1}+\lambda &\text{ if there is a change between $t-1$ and $t$,}\\
+C_{t-1}(\mu) & \text{ if the change was before that.}
+  \end{cases}
+\end{equation}
+
+
+\end{document}
