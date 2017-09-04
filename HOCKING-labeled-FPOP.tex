@@ -1,5 +1,7 @@
 \documentclass{article}
 
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \usepackage{fullpage}
 \usepackage{amsmath,amssymb,amsthm}
 \newtheorem{proposition}{Proposition}
@@ -200,6 +202,70 @@ $t\in[\underline p_i+2, \overline p_i]$ is:
 C_{t-1}(\mu) & \text{ if the change was before that.}
   \end{cases}
 \end{equation}
+
+\subsection{Pseudocode}
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+\STATE Input: data $\mathbf z\in\mathbb R^d$, 
+non-negative penalty $\lambda\in\RR_+$,
+sorted labels $(\underline p_i, \overline p_i, c_i)\in R$.
+\STATE Output: optimal cost $\hat{\mathbf C}\in\mathbb R^d$,
+mean $\mathbf m\in\mathbb R^d$,
+previous segment end $\mathbf T\in\{1,\dots,d\}^d$. 
+\STATE $i\gets 1$ // label counter
+\STATE $\text{labelType}\gets\text{unlabeled}$
+\STATE for $t$ from $1$ to $n$:
+\begin{ALC@g}
+  \STATE if $t==1$:
+  \begin{ALC@g}
+    \STATE $\text{cost}\gets 0$
+  \end{ALC@g}
+  \STATE else if $\text{labelType}==0$:
+  \begin{ALC@g}
+    \STATE $\text{cost}\gets\text{prev\_cost}$
+  \end{ALC@g}
+  \STATE else if $\text{labelType}==1$:
+  \begin{ALC@g}
+    \STATE $\text{change\_cost}\gets \text{MinPiece}(D) + \lambda$
+    \STATE if $t==\underline p_i+1$:
+    \begin{ALC@g}
+      \STATE $\text{cost}\gets\text{change\_cost}$
+    \end{ALC@g}
+    \STATE else:
+    \begin{ALC@g}
+      \STATE $\text{cost}\gets\text{MinOfTwo}(
+      \text{change\_cost}, \text{prev\_cost})$
+    \end{ALC@g}
+    \STATE $D$ += $\text{CostFun}(z_t)$
+  \end{ALC@g}
+  \STATE else if $\text{labelType}==\text{unlabeled}$:
+  \begin{ALC@g}
+    \STATE $\text{change\_cost}\gets\text{MinPiece}(\text{cost}) + \lambda$
+    \STATE $\text{cost}\gets\text{MinOfTwo}( 
+    \text{change\_cost}, \text{prev\_cost})$
+  \end{ALC@g}
+  \STATE $\text{cost}$ += $\text{CostFun}(z_t)$
+  \STATE if $t==\overline p_i$: // what update rule should we use next?
+  \begin{ALC@g}
+    \STATE $\text{labelType}\gets \text{unlabeled}$
+    \STATE $i\gets i+1$
+  \end{ALC@g}
+  \STATE if $t==\underline p_i$:
+  \begin{ALC@g}
+    \STATE $\text{labelType}\gets c_i$
+    \STATE if $\text{labelType}==1$:
+    \begin{ALC@g}
+      \STATE $D\gets \text{cost}$
+    \end{ALC@g}
+  \end{ALC@g}
+  \STATE $\hat C_t, m_t, T_t\gets \text{Minimize}(\text{cost})$
+  \STATE $\text{prev\_cost}\gets\text{cost}$
+\end{ALC@g}
+\caption{\label{algo:LabeledFPOP}Labeled Functional Pruning Optimal
+  Partitioning Algorithm.}
+\end{algorithmic}
+\end{algorithm}
 
 
 \end{document}
