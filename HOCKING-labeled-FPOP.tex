@@ -73,6 +73,7 @@ labels must be obeyed.
     \text{subject to} 
 & \ \ \sum_{t=\underline p_i}^{\overline p_i-1} I(m_t \neq m_{t+1})=c_i
 \text{ for all } i\in\{1,\dots,l\}.
+\nonumber
 \end{align}
 Note that $I$ is the indicator function (1 if true, 0 otherwise).
 
@@ -112,8 +113,8 @@ to data point $t-1$.
 
 For LabeledFPOP the update rule (\ref{eq:usual_FPOP}) is used if there
 is no label between data points $t-1$ and $t$. Indeed, if $R=\{\}$
-then there are no labels at all, so the LabeledFPOP problem and
-solution are the same as the usual FPOP.
+then there are no labels at all, so the LabeledFPOP problem is the
+same as the usual FPOP.
 
 \subsection{Negative label}
 If there is a $c_i=0$ label such that
