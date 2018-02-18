@@ -118,7 +118,7 @@ same as the usual FPOP.
 
 \subsection{Negative label}
 If there is a $c_i=0$ label such that
-$\underline c_i < t \leq \overline c_i$, then the update rule is
+$\underline p_i < t \leq \overline p_i$, then the update rule is
 simpler: the only possibility is no change.
 \begin{equation}
   \label{eq:negative_update}
@@ -135,9 +135,9 @@ end of the label is
   \label{eq:positive_cost}
   \min_{\mu_1, \mu_2}
   \begin{cases}
-    \ell(z_1,\mu_1) + \ell(z_2, \mu_2)+\ell(z_3, \mu_2) &\text{ for a
+    \lambda+\ell(z_1,\mu_1) + \ell(z_2, \mu_2)+\ell(z_3, \mu_2) &\text{ for a
       change after 1}\\
-    \ell(z_1,\mu_1) + \ell(z_2, \mu_1)+\ell(z_3, \mu_2) &\text{ for a
+    \lambda+\ell(z_1,\mu_1) + \ell(z_2, \mu_1)+\ell(z_3, \mu_2) &\text{ for a
       change after 2}\\
   \end{cases}
 \end{equation}
@@ -148,6 +148,7 @@ of the label is
   \label{eq:positive_cost}
   \min_{\mu_1, \mu_2}
   \min_{t\in[1, \overline p_i-1]}
+\lambda+
   \underbrace{
     \sum_{j=1}^t \ell(z_j, \mu_1)
   }_{\mathcal L_{1,t}(\mu_1)}+
