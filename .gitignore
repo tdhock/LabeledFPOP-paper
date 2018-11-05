@@ -3,3 +3,5 @@ auto
 *.aux
 *.log
 *.pdf
+*.bbl
+*.blg

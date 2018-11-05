@@ -1,5 +1,5 @@
 \documentclass{article}
-
+\usepackage{natbib}
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{fullpage}
@@ -58,7 +58,7 @@ Thus the number of possible labels is $l\in\{0, 1, \dots, d-1\}$.
 We would like to find the best mean vector $\mathbf m\in\mathbb R^d$.
 Best is defined using the Optimal Partitioning objective function -- a
 loss $\ell$ term for each data point, and a per-change penalty of
-$\lambda\geq 0$ (TODO:CITATION). We also add the constraints that the
+$\lambda\geq 0$ \citep{Maidstone2016}. We also add the constraints that the
 labels must be obeyed.
 
 \begin{align}
@@ -79,7 +79,7 @@ Note that $I$ is the indicator function (1 if true, 0 otherwise).
 
 SegAnnot is one algorithm that can be used in this context, but it is
 limited in that it can not detect any changes that are not labeled
-(TODO:citation). In fact SegAnnot computes a model with exactly
+\citep{Hocking2012}. In fact SegAnnot computes a model with exactly
 $N_1(R)=\sum_{(\underline p_i, \overline p_i, c_i)\in R} I(c_i=1)$ changes.
 
 The labels cover
@@ -97,9 +97,9 @@ data point $t$ if there is a mean of $\mu$ on the last data point
 $t$. The initialization is $C_1(\mu)= \ell(z_1, \mu)$. 
 
 \subsection{Usual FPOP}
-In the usual
-FPOP (without the label constraints), the dynamic programming update
-rule for $t>1$ is
+The usual FPOP algorithm does not have label constraints
+\citep{Maidstone2016}. The dynamic programming update rule for $t>1$
+is
 \begin{equation}
   \label{eq:usual_FPOP}
   C_t(\mu)=\ell(z_t, \mu) + \min
@@ -269,5 +269,7 @@ previous segment end $\mathbf T\in\{1,\dots,d\}^d$.
 \end{algorithmic}
 \end{algorithm}
 
+\bibliographystyle{abbrvnat}
+\bibliography{refs}
 
 \end{document}
