@@ -8,6 +8,12 @@ changepoint detection algorithm which can find any number of changes,
 but it ignores the labels. In this project we investigate a new
 algorithm which combines ideas from both algorithms.
 
+** 1 Nov 2019
+
+[[file:HOCKING-labeled-FPOP.pdf][New PDF]] contains V single subscript notation rather than D double
+subscript notation, clarify what needs to be computed for positive
+labels.
+
 ** 3 Sept 2017
 
 Typed problem and dynamic programming update rules.

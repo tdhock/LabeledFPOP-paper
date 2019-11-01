@@ -31,10 +31,10 @@ $\mathbf z\in\mathbb R^d$. We also have $l$ labeled regions
 $R=\{(\underline p_1, \overline p_1, c_1), \dots,
 (\underline p_l, \overline p_l, c_l)\}$:
 \begin{itemize}
-\item $\underline p_i$ is the start of a labeled region,
-\item $\overline p_i$ is the end of a labeled region,
-\item $c_i\in\{0,1\}$ is the number of changes in the region
-  $[\underline p_i, \overline p_i]$. 
+\item $\underline p_j$ is the start of a labeled region,
+\item $\overline p_j$ is the end of a labeled region,
+\item $c_j\in\{0,1\}$ is the number of changes in the region
+  $[\underline p_j, \overline p_j]$. 
 \end{itemize}
 For example
 $R=\{(\underline p_1=1,\overline p_1=2,c_1=0),(\underline
@@ -62,17 +62,17 @@ $\lambda\geq 0$ \citep{Maidstone2016}. We also add the constraints that the
 labels must be obeyed.
 
 \begin{align}
-\minimize_{
-  \mathbf m\in\RR^{d}
+\hat C_t = \min_{
+  \mathbf m\in\RR^{t}
   } &\ \ 
-\lambda\sum_{t=1}^{d-1} I(m_t \neq m_{t+1})
+\lambda\sum_{i=1}^{t-1} I(m_i \neq m_{i+1})
 +
-\sum_{t=1}^d \ell(z_t, m_t) 
+\sum_{i=1}^d \ell(z_i, m_i) 
   \label{LabeledProb}
 \\
     \text{subject to} 
-& \ \ \sum_{t=\underline p_i}^{\overline p_i-1} I(m_t \neq m_{t+1})=c_i
-\text{ for all } i\in\{1,\dots,l\}.
+& \ \ \sum_{i=\underline p_j}^{\overline p_j-1} I(m_i \neq m_{i+1})=c_j
+\text{ for all } j\in\{1,\dots,l\}.
 \nonumber
 \end{align}
 Note that $I$ is the indicator function (1 if true, 0 otherwise).
@@ -80,11 +80,11 @@ Note that $I$ is the indicator function (1 if true, 0 otherwise).
 SegAnnot is one algorithm that can be used in this context, but it is
 limited in that it can not detect any changes that are not labeled
 \citep{Hocking2012}. In fact SegAnnot computes a model with exactly
-$N_1(R)=\sum_{(\underline p_i, \overline p_i, c_i)\in R} I(c_i=1)$ changes.
+$N_1(R)=\sum_{(\underline p_j, \overline p_j, c_j)\in R} I(c_j=1)$ changes.
 
 The labels cover
-$S(R)=\sum_{(\underline p_i, \overline p_i, c_i)\in R} \overline
-p_i-\underline p_i$ possible changes, in which there are exactly
+$S(R)=\sum_{(\underline p_j, \overline p_j, c_j)\in R} \overline
+p_j-\underline p_j$ possible changes, in which there are exactly
 $N_1(R)$ changes. There are thus $d-S(R)$ positions which are not
 labeled, which may or may not have changes. Thus the number of
 possible changes is in $[N_1(R), d-S(R)+N_1(R)]$.
@@ -117,8 +117,8 @@ then there are no labels at all, so the LabeledFPOP problem is the
 same as the usual FPOP.
 
 \subsection{Negative label}
-If there is a $c_i=0$ label such that
-$\underline p_i < t \leq \overline p_i$, then the update rule is
+If there is a $c_j=0$ label such that
+$t \in\{\underline p_j+1, \dots,  \overline p_j\}$, then the update rule is
 simpler: the only possibility is no change.
 \begin{equation}
   \label{eq:negative_update}
@@ -127,9 +127,9 @@ C_{t-1}(\mu).
 \end{equation}
 
 \subsection{Positive label at the start}
-For a $c_i=1$ label the update rule is a bit more complicated. Take a
+For a $c_j=1$ label the update rule is a bit more complicated. Take a
 simple example to start. For a
-$(\underline p_i=1,\overline p_i=3,c_i=1)$ label, the cost up to the
+$(\underline p_j=1,\overline p_j=3,c_j=1)$ label, the cost up to the
 end of the label is
 \begin{equation}
   \label{eq:positive_cost}
@@ -142,21 +142,21 @@ end of the label is
   \end{cases}
 \end{equation}
 In general for a
-$(\underline p_i=1,\overline p_i,c_i=1)$ label, the cost up to the end
+$(\underline p_j=1,\overline p_j,c_j=1)$ label, the cost up to the end
 of the label is
 \begin{equation}
   \label{eq:positive_cost}
   \min_{\mu_1, \mu_2}
-  \min_{t\in[1, \overline p_i-1]}
+  \min_{t\in[1, \overline p_j-1]}
 \lambda+
   \underbrace{
     \sum_{j=1}^t \ell(z_j, \mu_1)
   }_{\mathcal L_{1,t}(\mu_1)}+
   \underbrace{
-    \sum_{j=t+1}^{\overline p_i}\ell(z_j, \mu_2)
-  }_{\mathcal L_{t+1,\overline p_i}(\mu_2)}.
+    \sum_{j=t+1}^{\overline p_j}\ell(z_j, \mu_2)
+  }_{\mathcal L_{t+1,\overline p_j}(\mu_2)}.
 \end{equation}
-We can use the recursive update rule for $t\in[2,\overline p_i-1]$:
+We can use the recursive update rule for $t\in\{2,\dots, \overline p_j-1\}$:
 \begin{equation}
   \mathcal L_{1,t}(\mu) = \mathcal L_{1,t-1}(\mu) +\ell(z_t , \mu).
 \end{equation}
@@ -167,7 +167,7 @@ change between 1 and 2:
 \end{equation}
 And then
 the update rule for
-$t\in[3, \overline p_i]$ is:
+$t\in\{3,\dots \overline p_j\}$ is:
 \begin{equation}
   \label{eq:positive_update}
   C_t(\mu)=\ell(z_t, \mu) + \min
@@ -178,29 +178,35 @@ C_{t-1}(\mu) & \text{ if the labeled change was before that.}
 \end{equation}
 \subsection{Positive label general case}
 
-In general for a $(\underline p_i,\overline p_i,c_i=1)$ label, we need
-to add the optimal cost function before the label, for
-$t\in[\underline p_i, \overline p_i-1]$:
+In general for a $(\underline p_j,\overline p_j,c_j=1)$ label, we need
+to compute the following quantities. First at $t=\underline p_j+1$ we
+only need to consider one possibility (a change between
+$t-1=\underline p_j$ and $t=\underline p_j+1$) to compute the optimal
+cost function,
 \begin{equation}
-D_{\underline p_i, t}(\mu) = 
-\begin{cases}
-  C_{\underline p_i}(\mu) & \text{ for }t=\underline p_i\\
-  \ell(z_t, \mu) + D_{\underline p_i,t-1}(\mu) & \text{ for }t\in[\underline p_i+1, \overline p_i-1].
-\end{cases}
+  \label{eq:c1init}
+  C_t(\mu) = \ell(z_t, \mu) + \hat C_{t-1} + \lambda.
 \end{equation}
-And then for the optimal cost we initialize $t=\underline p_i+1$ to
-the cost of a change between $\underline p_i$ and $\underline p_i+1$:
+If the label spans more than one possible changepoint
+($\underline p_j+1<\overline p_j$) then for all
+$t\in\{\underline p_j+1,\dots,\overline p_j-1\}$ we also need to
+compute the cost of no change since the start of the label, and store
+it in a separate function,
 \begin{equation}
-  C_{\underline p_i+1}(\mu)=\ell(z_{\underline p_i+1},\mu)+\hat D_{\underline p_i,\underline p_i}+\lambda.
+  \label{eq:c1v}
+  V_t(\mu) = \ell(z_t, \mu) +
+  \begin{cases}
+    C_{t-1}(\mu) & \text{ if } t=\underline p_j+1,\\
+    V_{t-1}(\mu) & \text{ if } t\in\{\underline p_j+2,\dots,\overline p_j-1\}.
+  \end{cases}
 \end{equation}
-And then
-the update rule for
-$t\in[\underline p_i+2, \overline p_i]$ is:
+And for all $t\in\{\underline p_j+2,\dots,\overline p_j\}$ the optimal
+cost is computed by taking the minimum of two functions,
 \begin{equation}
   \label{eq:positive_update}
   C_t(\mu)=\ell(z_t, \mu) + \min
   \begin{cases}
-\hat D_{\underline p_i, t-1}+\lambda &\text{ if there is a change between $t-1$ and $t$,}\\
+\hat V_{t-1}+\lambda &\text{ if there is a change between $t-1$ and $t$,}\\
 C_{t-1}(\mu) & \text{ if the change was before that.}
   \end{cases}
 \end{equation}
@@ -211,13 +217,13 @@ C_{t-1}(\mu) & \text{ if the change was before that.}
 \begin{algorithmic}[1]
 \STATE Input: data $\mathbf z\in\mathbb R^d$, 
 non-negative penalty $\lambda\in\RR_+$,
-sorted labels $(\underline p_i, \overline p_i, c_i)\in R$.
+sorted labels $(\underline p_j, \overline p_j, c_j)\in R$.
 \STATE Output: optimal cost $\hat{\mathbf C}\in\mathbb R^d$,
 mean $\mathbf m\in\mathbb R^d$,
 previous segment end $\mathbf T\in\{1,\dots,d\}^d$. 
-\STATE $i\gets 1$ // label counter
+\STATE $j\gets 1$ // label counter
 \STATE $\text{labelType}\gets\text{unlabeled}$
-\STATE for $t$ from $1$ to $n$:
+\STATE for $t$ from $1$ to $d$:
 \begin{ALC@g}
   \STATE if $t==1$:
   \begin{ALC@g}
@@ -229,8 +235,8 @@ previous segment end $\mathbf T\in\{1,\dots,d\}^d$.
   \end{ALC@g}
   \STATE else if $\text{labelType}==1$:
   \begin{ALC@g}
-    \STATE $\text{change\_cost}\gets \text{MinPiece}(D) + \lambda$
-    \STATE if $t==\underline p_i+1$:
+    \STATE $\text{change\_cost}\gets \text{MinPiece}(V) + \lambda$
+    \STATE if $t==\underline p_j+1$:
     \begin{ALC@g}
       \STATE $\text{cost}\gets\text{change\_cost}$
     \end{ALC@g}
@@ -239,7 +245,7 @@ previous segment end $\mathbf T\in\{1,\dots,d\}^d$.
       \STATE $\text{cost}\gets\text{MinOfTwo}(
       \text{change\_cost}, \text{prev\_cost})$
     \end{ALC@g}
-    \STATE $D$ += $\text{CostFun}(z_t)$
+    \STATE $V$ += $\text{CostFun}(z_t)$
   \end{ALC@g}
   \STATE else if $\text{labelType}==\text{unlabeled}$:
   \begin{ALC@g}
@@ -248,17 +254,17 @@ previous segment end $\mathbf T\in\{1,\dots,d\}^d$.
     \text{change\_cost}, \text{prev\_cost})$
   \end{ALC@g}
   \STATE $\text{cost}$ += $\text{CostFun}(z_t)$
-  \STATE if $t==\overline p_i$: // what update rule should we use next?
+  \STATE if $t==\overline p_j$: // what update rule should we use next?
   \begin{ALC@g}
     \STATE $\text{labelType}\gets \text{unlabeled}$
-    \STATE $i\gets i+1$
+    \STATE $j++$
   \end{ALC@g}
-  \STATE if $t==\underline p_i$:
+  \STATE if $t==\underline p_j$:
   \begin{ALC@g}
-    \STATE $\text{labelType}\gets c_i$
+    \STATE $\text{labelType}\gets c_j$
     \STATE if $\text{labelType}==1$:
     \begin{ALC@g}
-      \STATE $D\gets \text{cost}$
+      \STATE $V\gets \text{cost}$
     \end{ALC@g}
   \end{ALC@g}
   \STATE $\hat C_t, m_t, T_t\gets \text{Minimize}(\text{cost})$
