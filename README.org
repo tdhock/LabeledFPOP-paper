@@ -2,11 +2,26 @@ LabeledFPOP paper
 
 ** Motivation
 
-[[https://hal.inria.fr/hal-00759129][SegAnnot]] is a changepoint detection algorithm for data sequences with
-labels, but it does not find changes that are not labeled. [[http://link.springer.com/article/10.1007/s11222-016-9636-3][FPOP]] is a
-changepoint detection algorithm which can find any number of changes,
-but it ignores the labels. In this project we investigate a new
-algorithm which combines ideas from both algorithms.
+[[https://arxiv.org/abs/2006.13967][LOPART]] = Labeled Optimal Partitioning is a changepoint detection
+algorithm for data sequences which
+- supports 0/1 labels, 
+- each changepoint is unconstrained (can be either up or down),
+- and is quadratic time in the number of data.
+
+[[https://arxiv.org/abs/2002.03646][GFPOP]]/[[https://arxiv.org/abs/1810.00117][PeakSegDisk]] is a changepoint detection algorithm/package which 
+- does not support labels,
+- each changepoint can be constrained (non-decreasing, non-increasing),
+- and is log-linear time in the number of data.
+
+In this paper we investigate a new algorithm, FLOPART = Functional LOPART, which
+- supports 0/1/up/down labels,
+- each changepoint can be constrained (non-decreasing, non-increasing),
+- and is log-linear time in the number of data.
+
+** TODOs
+
+Start with [[https://github.com/tdhock/PeakSegDisk][PeakSegDisk]] code and modify to support peak label
+constraints.
 
 ** 1 Nov 2019
 
