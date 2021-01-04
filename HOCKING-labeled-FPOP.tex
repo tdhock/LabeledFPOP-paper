@@ -176,6 +176,7 @@ $t\in\{3,\dots \overline p_j\}$ is:
 C_{t-1}(\mu) & \text{ if the labeled change was before that.}
   \end{cases}
 \end{equation}
+
 \subsection{Positive label general case}
 
 In general for a $(\underline p_j,\overline p_j,c_j=1)$ label, we need
@@ -274,6 +275,72 @@ previous segment end $\mathbf T\in\{1,\dots,d\}^d$.
   Partitioning Algorithm.}
 \end{algorithmic}
 \end{algorithm}
+
+\subsection{Peak model with start/end labels}
+
+In the peak model of \citet{Hocking2020jmlr} there are two states:
+up/peak and down/background. We therefore need to compute two kinds of
+cost functions, $\overline C_t(\mu),\underline C_t(\mu)$ for all
+$t\in\{1,\dots,d\}$. We assume three different kinds of labels,
+$c_j\in\{0,1,-1\}$, where 0 means no peaks in the region, 1 means
+exactly one change up, and -1 means exactly one change down.
+
+For $t$ in an unlabeled region the update rules are
+\begin{eqnarray}
+  \overline C_t(\mu)
+  &=& \ell(z_t, \mu) + \min\{
+      \overline C_{t-1}(\mu),
+      \underline C_{t-1}^\leq(\mu) + \lambda
+      \}, \\
+  \underline C_t(\mu)
+  &=& \ell(z_t, \mu) + \min\{
+      \underline C_{t-1}(\mu),
+      \overline C_{t-1}^\geq(\mu)
+      \}.
+\end{eqnarray}
+
+For $t$ in a $c_j=0$ (no peaks) label,
+\begin{eqnarray}
+  \label{eq:c0peak}
+  \overline C_t(\mu)
+  &=& \infty,
+  \\
+  \underline C_t(\mu)
+  &=& \ell(z_t, \mu) + \min\{
+      \underline C_{t-1}(\mu),
+      \overline C_{t-1}^\geq(\mu)
+      \}. \\
+\end{eqnarray}
+(the $\infty$ should be treated as a special case in the min operator).
+
+For $t$ in a $c_j=1$ (peak start) label, we simplify by assuming we
+need to be in down state at the start of the label and up state at the
+end of the label.
+\begin{eqnarray}
+  \label{eq:c1peak}
+  \overline C_t(\mu)
+  &=& \begin{cases}
+    \infty & \text{ if } t=\underline p_j,\\
+    \ell(z_t, \mu) + \min\{
+    \overline C_{t-1}(\mu),
+    \underline C_{t-1}^\leq(\mu) 
+    \} &  \text{ otherwise.}
+  \end{cases} \\
+  \underline C_t(\mu)
+  &=& \ell(z_t, \mu) + \begin{cases}
+    \min\{
+    \underline C_{t-1}(\mu),
+    \overline C_{t-1}^\geq(\mu)
+    \} & \text{ if } t=\underline p_j,\\
+    \infty & \text{ if }t=\overline p_j,\\
+    \underline C_{t-1}(\mu) & \text{ otherwise.}
+  \end{cases} 
+\end{eqnarray}
+The update rule for $t$ in a $c_j=-1$ (peak end) label is analogous.
+
+Labels could be inconsistent if $\overline p_j = \underline p_{j+1}$,
+e.g., two peakStart labels right next to each other. To deal with
+that, we can enforce $\overline p_j < \underline p_{j+1}$ for the peak model.
 
 \bibliographystyle{abbrvnat}
 \bibliography{refs}
