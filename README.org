@@ -23,6 +23,9 @@ In this paper we investigate a new algorithm, FLOPART = Functional LOPART, which
 Start with [[https://github.com/tdhock/PeakSegDisk][PeakSegDisk]] code and modify to support peak label
 constraints.
 ** 15 Jan 2021
+
+TODO more labels!!
+
 This is a good motivating data set for the new algorithm. We can't
 detect the small peak with the un-labeled algo until 13 peaks, and in
 that model we end up with several big peaks in the data that have two
