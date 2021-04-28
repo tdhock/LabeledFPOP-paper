@@ -17,11 +17,22 @@ In this paper we investigate a new algorithm, FLOPART = Functional LOPART, which
 - supports 0/1/up/down labels,
 - each changepoint can be constrained (non-decreasing, non-increasing),
 - and is log-linear time in the number of data.
-
+  
 ** TODOs
 
-Start with [[https://github.com/tdhock/PeakSegDisk][PeakSegDisk]] code and modify to support peak label
-constraints.
+- Time complexity comparison with PeakSegOptimal / LOPART.
+- Accuracy comparison with PeakSegOptimal, similar to LOPART paper.
+
+** 28 Apr 2021
+
+[[file:figure-Mono27ac-FLOPART.R]] makes
+
+[[file:figure-Mono27ac-FLOPART-zoom-out.png]]
+
+[[file:figure-Mono27ac-FLOPART-zoom-noPeaks.png]]
+
+[[file:figure-Mono27ac-FLOPART-zoom-peakEnd.png]]
+
 ** 15 Jan 2021
 
 TODO more labels!!

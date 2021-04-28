@@ -1,3 +1,4 @@
+##install.packages(c("PeakSegDisk", "PeakSegOptimal", "PeakError"))
 data(Mono27ac, package="PeakSegDisk")
 library(ggplot2)
 library(data.table)
