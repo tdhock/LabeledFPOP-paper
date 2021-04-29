@@ -25,6 +25,10 @@ In this paper we investigate a new algorithm, FLOPART = Functional LOPART, which
 
 ** 28 Apr 2021
 
+[[file:figure-FLOPART-boundaries.R]] makes
+
+[[file:figure-FLOPART-boundaries.png]]
+
 [[file:figure-Mono27ac-FLOPART.R]] makes
 
 [[file:figure-Mono27ac-FLOPART-zoom-out.png]]
