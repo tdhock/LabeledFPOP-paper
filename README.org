@@ -25,7 +25,17 @@ In this paper we investigate a new algorithm, FLOPART = Functional LOPART, which
 
 ** 20 May 2021
 
-[[file:figure-smaller-example.R]]
+[[file:figure-smaller-example-intervals.R]] makes a figure that shows that
+within a label, the number of intervals is either constant or
+increasing... why? theory?
+
+[[file:figure-smaller-example-intervals.png]] 
+
+[[file:figure-smaller-example.R]] makes a figure which shows a convincing
+a simple real data motivating example for LOPART. Without using the
+label constraints there is no way to get zero label errors, but with
+label constraints we get a model which is quite reasonable with
+respect to the visually obvious peaks.
 
 [[file:figure-smaller-example.png]]
    
