@@ -63,6 +63,11 @@ gg <- ggplot()+
     data=FLOPART.peaks)
 gg
 
+Mono27ac.simple <- list(
+  coverage=some.coverage,
+  label=some.labels)
+##prompt(Mono27ac.simple, file="~/R/FLOPART/man/Mono27ac.simple.Rd")
+
 seg.dt.list <- list(
   FLOPART=FLOPART.segs)
 for(show.peaks in 5:max.peaks){
