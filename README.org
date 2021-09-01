@@ -14,9 +14,10 @@ algorithm for data sequences which
 - and is log-linear time in the number of data.
 
 In this paper we investigate a new algorithm, FLOPART = Functional LOPART, which
-- supports 0/1/up/down labels,
+- supports 0/up/down labels,
 - each changepoint can be constrained (non-decreasing, non-increasing),
 - and is log-linear time in the number of data.
+- [[https://github.com/tdhock/FLOPART][See FLOPART repo for R package with C++ code that implements this algorithm]].
   
 ** TODOs
 
