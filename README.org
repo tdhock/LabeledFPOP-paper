@@ -24,6 +24,13 @@ In this paper we investigate a new algorithm, FLOPART = Functional LOPART, which
 - Time complexity comparison with PeakSegOptimal / LOPART.
 - Accuracy comparison with PeakSegOptimal, similar to LOPART paper.
 
+** 13 Sept 2021
+
+[[file:figure-motivation.R]] makes a figure that shows a real data example
+for which the up-down constrained Poisson model is not working,
+
+[[file:figure-motivation.png]]
+
 ** 20 May 2021
 
 [[file:figure-smaller-example-intervals.R]] makes a figure that shows that
