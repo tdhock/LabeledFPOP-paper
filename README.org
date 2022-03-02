@@ -24,6 +24,12 @@ In this paper we investigate a new algorithm, FLOPART = Functional LOPART, which
 - Time complexity comparison with PeakSegOptimal / LOPART.
 - Accuracy comparison with PeakSegOptimal, similar to LOPART paper.
 
+** 2 Mar 2022
+
+[[file:figure-computation-graph.R]] makes
+
+[[file:figure-computation-graph.png]]
+
 ** 13 Sept 2021
 
 [[file:figure-motivation.R]] makes a figure that shows a real data example
