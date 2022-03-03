@@ -23,12 +23,16 @@ In this paper we investigate a new algorithm, FLOPART = Functional LOPART, which
 - Time complexity comparison with PeakSegOptimal / LOPART.
 - Accuracy comparison with PeakSegOptimal, similar to LOPART paper.
 
+** 25 May 2021
+
+TODO LOPART comparison with both labeled data sets. 
+
 ** 20 May 2021
 
 [[file:figure-smaller-example-intervals.R]] makes a figure that shows that
 within a label, the number of intervals is either constant or
 increasing... why? theory?
-
+.
 [[file:figure-smaller-example-intervals.png]] 
 
 [[file:figure-smaller-example.R]] makes a figure which shows a convincing
